@@ -20,6 +20,9 @@ def apply_coupons(cart, coupons)
     coupons.length.times do |i|
       if item.to_s == coupons[i][:item].to_s
         # conditional for the case where there is more than one coupon for the same item
+        if specs[:count].to_i < coupons[i][:num].to_i
+          return cart
+        end
         if cart.include?("#{item.to_s} W/COUPON")
           cart["#{item.to_s} W/COUPON"][:count] += coupons[i][:num].to_i
           specs[:count] = specs[:count].to_i - coupons[i][:num].to_i
