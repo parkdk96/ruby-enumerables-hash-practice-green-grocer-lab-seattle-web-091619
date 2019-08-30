@@ -19,10 +19,11 @@ def apply_coupons(cart, coupons)
     # need to make a clone in order to avoid adding a new key into hash during iteration error
     coupons.length.times do |i|
       if item.to_s == coupons[i][:item].to_s
-        # conditional for the case where there is more than one coupon for the same item
+        # conditional for the case where the coupon minimum amount isn't met
         if specs[:count].to_i < coupons[i][:num].to_i
           return cart
         end
+        # conditional for the case where there is more than one coupon for the same item
         if cart.include?("#{item.to_s} W/COUPON")
           cart["#{item.to_s} W/COUPON"][:count] += coupons[i][:num].to_i
           specs[:count] = specs[:count].to_i - coupons[i][:num].to_i
