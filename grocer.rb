@@ -54,6 +54,8 @@ def checkout(cart, coupons)
   cart = apply_coupons(cart, coupons)
   cart = apply_clearance(cart)
   
+  puts cart
+  
   total = 0 
   cart.each do |item, specs|
     total += specs[:price].to_f
