@@ -59,7 +59,7 @@ def checkout(cart, coupons)
     total += specs[:price].to_f
   end
   
-  if 100.to_f < total
+  if 100 < total
     total *= 0.9
   end
   return total
