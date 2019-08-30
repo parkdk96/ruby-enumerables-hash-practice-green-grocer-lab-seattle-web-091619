@@ -18,21 +18,25 @@ def apply_coupons(cart, coupons)
   cart.clone.each do |item, specs|
     # need to make a clone in order to avoid adding a new key into hash during iteration error
     coupons.length.times do |i|
-      if item.to_s == coupons[i][:item].to_s
-        # conditional for the case where there is more than one coupon for the same item
-        if cart.include?("#{item.to_s} W/COUPON")
-          cart["#{item.to_s} W/COUPON"][:count] += coupons[i][:num].to_i
-          specs[:count] = specs[:count].to_i - coupons[i][:num].to_i
+      if item.to_s == coupons[i][:item].to_s  
+        if coupons[i][:num].to_i < specs[:count].to_i
+          # conditional for the case where there is more than one coupon for the same item
+          if cart.include?("#{item.to_s} W/COUPON")
+            cart["#{item.to_s} W/COUPON"][:count] += coupons[i][:num].to_i
+            specs[:count] = specs[:count].to_i - coupons[i][:num].to_i
+          else
+            discounted_item = "#{item.to_s} W/COUPON"
+            remaining_items = specs[:count].to_i - coupons[i][:num].to_i
+            discounted_price = coupons[i][:cost].to_f / coupons[i][:num].to_f
+            cart[discounted_item] = {
+              :price => discounted_price,
+              :clearance => specs[:clearance],
+              :count => coupons[i][:num].to_i
+              }
+            specs[:count] = remaining_items
+          end
         else
-          discounted_item = "#{item.to_s} W/COUPON"
-          remaining_items = specs[:count].to_i - coupons[i][:num].to_i
-          discounted_price = coupons[i][:cost].to_f / coupons[i][:num].to_f
-          cart[discounted_item] = {
-            :price => discounted_price,
-            :clearance => specs[:clearance],
-            :count => coupons[i][:num].to_i
-            }
-          specs[:count] = remaining_items
+          return cart
         end
       end
     end
